@@ -1,12 +1,10 @@
-find_package(Protobuf REQUIRED)
-
 find_program(PROTOBUF_PROTOC protoc REQUIRED)
 
 message(STATUS "Protobuf found")
 
 set(PROTOBUF_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
-set(PROTOBUF_OUTPUT "${CMAKE_BINARY_DIR}/generated/protobuf/")
+set(PROTOBUF_OUTPUT "${CMAKE_BINARY_DIR}/generated/protobuf")
 
 set_property(GLOBAL APPEND PROPERTY PROTO_CC_HEADERS ${PROTOBUF_OUTPUT})
 
@@ -63,10 +61,10 @@ file(GLOB CC_SRC_FILES
 
 message(STATUS ${CC_SRC_FILES})
 
-add_library(${PROJECT_NAME}-pb-c ${C_SRC_FILES})
+add_library(${PROJECT_NAME}-pb-c SHARED ${C_SRC_FILES})
 target_include_directories(${PROJECT_NAME}-pb-c PRIVATE $<BUILD_INTERFACE:${PROTOBUF_C_OUTPUT}>)
 target_link_libraries(${PROJECT_NAME}-pb-c protobuf::libprotobuf)
 
-add_library(${PROJECT_NAME}-pb-cc ${CC_SRC_FILES})
+add_library(${PROJECT_NAME}-pb-cc SHARED ${CC_SRC_FILES})
 target_include_directories(${PROJECT_NAME}-pb-cc PRIVATE $<BUILD_INTERFACE:${PROTOBUF_CXX_OUTPUT}>)
 target_link_libraries(${PROJECT_NAME}-pb-cc protobuf::libprotobuf)
