@@ -5,7 +5,7 @@
 
 struct nexus_message *nexus_message_init(uint32_t len,
 					 uint32_t type,
-					 uint8_t *buf)
+					 uint8_t *data)
 {
 	struct nexus_message *msg =
 		(struct nexus_message *)calloc(1, sizeof(struct nexus_message));
@@ -25,8 +25,8 @@ struct nexus_message *nexus_message_init(uint32_t len,
 		return NULL;
 	}
 
-	if (buf)
-		memcpy(msg->data, buf, msg->len);
+	if (data)
+		memcpy(msg->data, data, msg->len);
 
 	return msg;
 }

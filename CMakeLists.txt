@@ -13,7 +13,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SRC_FILES
 	src/node.c
+	src/node.cpp
 	src/message.c
+	src/message.cpp
 )
 
 set(INCLUDE
@@ -48,6 +50,7 @@ endif()
 set(INSTALL_TARGETS
 	${PROJECT_NAME}
 	${PROJECT_NAME}-cli
+	${PROJECT_NAME}-cpp-cli
 	${PROJECT_NAME}-pb-c
 	${PROJECT_NAME}-pb-cc
 )

@@ -1,6 +1,13 @@
+#ifndef _NEXUS_H_
+#define _NEXUS_H_
+
 #include <stdint.h>
+#include <neutron.h>
 #include <protobuf-c/protobuf-c.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* Opaque structures for declarations */
 struct nexus_node;
 struct nexus_message;
@@ -17,7 +24,7 @@ struct nexus_node_cbs {
 
 struct nexus_message *nexus_message_init(uint32_t len,
 					 uint32_t type,
-					 uint8_t *buf);
+					 uint8_t *data);
 
 int nexus_message_get_packed_size(struct nexus_message *msg);
 
@@ -35,6 +42,9 @@ void nexus_message_print(struct nexus_message *msg);
 
 struct nexus_node *nexus_node_create(struct nexus_node_cbs *cbs);
 
+struct nexus_node *nexus_node_create_with_loop(struct neutron_loop *loop,
+					       struct nexus_node_cbs *cbs);
+
 void nexus_node_destroy(struct nexus_node *node);
 
 int nexus_node_listen(struct nexus_node *node, const char *address);
@@ -50,3 +60,7 @@ int nexus_node_send_protobuf(struct nexus_node *node,
 int nexus_node_spin(struct nexus_node *node);
 
 void nexus_node_stop(struct nexus_node *node);
+#ifdef __cplusplus
+}
+#endif
+#endif

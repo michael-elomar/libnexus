@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include <nexus.h>
-#include <neutron.h>
 
 struct nexus_node {
 	struct neutron_loop *loop;

@@ -151,7 +151,6 @@ int nexus_node_spin(struct nexus_node *node)
 
 void nexus_node_stop(struct nexus_node *node)
 {
-	int ret = 0;
 	if (!node->is_spinning)
 		return;
 
@@ -189,6 +188,7 @@ int nexus_node_send_protobuf(struct nexus_node *node,
 			     ProtobufCMessage *proto_msg,
 			     uint32_t type)
 {
+	int ret = 0;
 	size_t protobuflen = protobuf_c_message_get_packed_size(proto_msg);
 	uint8_t *pack_protobuf = (uint8_t *)malloc(protobuflen);
 	if (!pack_protobuf) {
@@ -211,5 +211,7 @@ int nexus_node_send_protobuf(struct nexus_node *node,
 		return ENOMEM;
 	}
 
-	return nexus_node_send_message(node, msg);
+	ret = nexus_node_send_message(node, msg);
+	nexus_message_destroy(msg);
+	return ret;
 }
