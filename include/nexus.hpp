@@ -1,3 +1,5 @@
+#pragma once
+
 #include <nexus.h>
 #include <neutron.hpp>
 #include <google/protobuf/message.h>
@@ -11,20 +13,21 @@ class NodeHandler;
 class Message {
 public:
 	Message(uint32_t len, uint32_t type, uint8_t *data);
-	Message(struct nexus_message *msg);
 	~Message();
 
 	int getPackedSize();
 
-	void pack(uint8_t *buf, uint32_t buflen);
-	static const Message *unpack(uint8_t *buf, uint32_t buflen);
+	void pack(uint8_t *buf);
+	static const Message *unpack(const uint8_t *buf);
 
-	void print();
+	const void print() const;
+
+public:
+	bool operator==(const Message &msg) const;
 
 private:
 	uint32_t mLen, mType;
-	uint8_t *mBuf;
-	struct nexus_message *mMsg;
+	uint8_t *mBuf = nullptr;
 };
 
 class NodeHandler {
@@ -34,7 +37,7 @@ public:
 	inline virtual void onConnected(Node *node, void *userdata) = 0;
 	inline virtual void onDisconnected(Node *node, void *userdata) = 0;
 	inline virtual void onMsgRecv(Node *node,
-				      Message *msg,
+				      const Message *msg,
 				      void *userdata) = 0;
 };
 
@@ -68,7 +71,7 @@ private:
 	neutron::Context *mContext;
 	NodeHandler *mHandler;
 	std::string mAddress;
-	bool is_publisher;
+	bool mIsLoopExternal;
 	bool mIsSpinning;
 };
 } // namespace nexus

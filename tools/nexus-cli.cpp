@@ -1,4 +1,3 @@
-#include <cinttypes>
 #include <math.h>
 #include <nexus.hpp>
 #include <neutron.hpp>
@@ -24,7 +23,7 @@ public:
 		LOGI("Node disconnected");
 	}
 	inline virtual void onMsgRecv(nexus::Node *node,
-				      nexus::Message *msg,
+				      const nexus::Message *msg,
 				      void *userdata) override
 	{
 		LOGI("Message received");
@@ -34,15 +33,14 @@ public:
 
 class App {
 public:
-	App(CLIHandler *handler) : mHandler(handler)
+	App(CLIHandler *handler)
 	{
 		App::sInstance = this;
-		mNode = new nexus::Node(mHandler);
+		mNode = new nexus::Node(handler);
 	}
 
 	~App()
 	{
-		delete mHandler;
 		delete mNode;
 	}
 
@@ -89,8 +87,6 @@ public:
 private:
 	inline static App *sInstance;
 	nexus::Node *mNode;
-	neutron::Loop *mLoop;
-	CLIHandler *mHandler;
 	std::string mAddress;
 	bool mIsServer;
 };
@@ -166,20 +162,11 @@ int main(int argc, char **argv)
 		}
 	}
 
-	uint8_t buf[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	int type = 3;
-
-	nexus::Message *msg = new nexus::Message(10, type, buf);
-
-	int packed_buflen = msg->getPackedSize();
-	uint8_t *packed_buf = (uint8_t *)malloc(packed_buflen);
-	msg->pack(packed_buf, packed_buflen);
-
-	free(packed_buf);
-
 	app.run();
-	if (!app.isServer())
+	if (!app.isServer()) {
+		uint8_t buf[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		nexus::Message *msg = new nexus::Message(10, 3, buf);
 		app.sendMsg(msg);
-
-	delete msg;
+		delete msg;
+	}
 }

@@ -9,6 +9,8 @@ Node::Node(NodeHandler *handler, neutron::Loop *loop)
 	: mHandler(handler), mContext(new neutron::Context(this, loop))
 
 {
+	if (loop != nullptr)
+		mIsLoopExternal = true;
 	mLoop = mContext->getLoop();
 }
 
@@ -16,7 +18,8 @@ Node::~Node()
 {
 	delete mContext;
 	delete mHandler;
-	delete mLoop;
+	if (mIsLoopExternal)
+		delete mLoop;
 }
 
 int Node::listen(const std::string &address)
@@ -82,7 +85,7 @@ int Node::sendMessage(Message *msg)
 		return ENOMEM;
 	}
 
-	msg->pack(packbuf, packlen);
+	msg->pack(packbuf);
 	ret = mContext->send(packbuf, packlen);
 	if (ret)
 		LOG_ERRNO("mContext::send");
@@ -134,9 +137,7 @@ inline void Node::recvData(neutron::Context *ctx,
 			   neutron::Connection *conn,
 			   const std::vector<uint8_t> &buf)
 {
-	Message *msg = new Message(
-		nexus_message_unpack((uint8_t *)buf.data(), buf.size()));
-
+	const Message *msg = Message::unpack(buf.data());
 	mHandler->onMsgRecv(this, msg, nullptr);
 }
 

@@ -5,40 +5,67 @@
 namespace nexus {
 
 Message::Message(uint32_t len, uint32_t type, uint8_t *data)
+	: mLen(len), mType(type), mBuf((uint8_t *)malloc(mLen))
 {
-	mMsg = nexus_message_init(len, type, data);
-}
-Message::Message(struct nexus_message *msg)
-{
-	mMsg = msg;
+	if (mBuf != nullptr)
+		memcpy(mBuf, data, mLen);
 }
 
 Message::~Message()
 {
-	nexus_message_destroy(mMsg);
+	free(mBuf);
 }
 
 int Message::getPackedSize()
 {
-	return nexus_message_get_packed_size(mMsg);
+	return mLen + sizeof(mLen) + sizeof(mType);
 }
 
-void Message::pack(uint8_t *buf, uint32_t buflen)
+void Message::pack(uint8_t *buf)
 {
-	nexus_message_pack(mMsg, buf, buflen);
+	int offset = 0;
+	memcpy(buf + offset, (uint8_t *)&mType, sizeof(uint32_t));
+	offset += sizeof(mType);
+
+	memcpy(buf + offset, (uint8_t *)&mLen, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+
+	memcpy(buf + offset, mBuf, mLen);
 }
 
-const Message *Message::unpack(uint8_t *buf, uint32_t buflen)
+const Message *Message::unpack(const uint8_t *buf)
 {
-	const Message *msg = new Message(nexus_message_unpack(buf, buflen));
+
+	int offset = 0;
+	uint32_t type, len;
+	memcpy((uint8_t *)&type, buf + offset, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+
+	memcpy((uint8_t *)&len, buf + offset, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+
+	const Message *msg = new Message(len, type, (uint8_t *)malloc(len));
+
+	memcpy(msg->mBuf, buf + offset, msg->mLen);
+
 	return msg;
 }
 
-void Message::print()
+const void Message::print() const
 {
 	LOGI("Type: %u, Size: %u", mType, mLen);
 	for (int i = 0; i < mLen; i++)
 		printf("%u, ", mBuf[i]);
+	printf("\n");
+}
+
+bool Message::operator==(const Message &msg) const
+{
+	bool eq = msg.mLen == this->mLen;
+	eq = eq && (msg.mType == this->mType);
+
+	eq = eq && (memcmp(this->mBuf, msg.mBuf, this->mLen) == 0);
+	return eq;
 }
 
 } // namespace nexus
