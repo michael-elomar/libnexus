@@ -44,6 +44,12 @@ else()
 	message(STATUS "Build examples - skip")
 endif()
 
+#======== Build tests ========#
+if(${BUILD_TESTS} STREQUAL "ON")
+	add_subdirectory(tests)
+else()
+	message(STATUS "Build tests - skip")
+endif()
 
 #======== Install Support ========#
 
@@ -53,6 +59,9 @@ set(INSTALL_TARGETS
 	${PROJECT_NAME}-cpp-cli
 	${PROJECT_NAME}-pb-c
 	${PROJECT_NAME}-pb-cc
+
+	# add test targets here
+	test_message
 )
 
 install(TARGETS ${INSTALL_TARGETS}
