@@ -22,6 +22,12 @@ public:
 
 	const void print() const;
 
+	uint32_t type() const;
+
+	uint32_t len() const;
+
+	uint8_t *buf() const;
+
 public:
 	bool operator==(const Message &msg) const;
 
@@ -43,7 +49,7 @@ public:
 
 class Node : public neutron::Context::Handler {
 public:
-	Node(NodeHandler *handler, neutron::Loop *loop = nullptr);
+	Node(NodeHandler *handler = nullptr, neutron::Loop *loop = nullptr);
 	~Node();
 
 	int listen(const std::string &address);

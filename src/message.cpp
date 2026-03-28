@@ -50,6 +50,21 @@ const Message *Message::unpack(const uint8_t *buf)
 	return msg;
 }
 
+uint32_t Message::len() const
+{
+	return mLen;
+}
+
+uint32_t Message::type() const
+{
+	return mType;
+}
+
+uint8_t *Message::buf() const
+{
+	return mBuf;
+}
+
 const void Message::print() const
 {
 	LOGI("Type: %u, Size: %u", mType, mLen);

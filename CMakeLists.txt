@@ -63,6 +63,7 @@ set(INSTALL_TARGETS
 
 	# add test targets here
 	test_message
+	test_node
 )
 
 install(TARGETS ${INSTALL_TARGETS}

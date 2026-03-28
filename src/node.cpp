@@ -17,7 +17,8 @@ Node::Node(NodeHandler *handler, neutron::Loop *loop)
 Node::~Node()
 {
 	delete mContext;
-	delete mHandler;
+	if (mHandler != nullptr)
+		delete mHandler;
 	if (mIsLoopExternal)
 		delete mLoop;
 }
@@ -119,26 +120,27 @@ int Node::sendProtoMessage(uint32_t type, google::protobuf::Message *msg)
 
 inline void Node::onConnected(neutron::Context *ctx, neutron::Connection *conn)
 {
-	mHandler->onConnected(this, nullptr);
+	if (mHandler != nullptr)
+		mHandler->onConnected(this, nullptr);
 }
 
 inline void Node::onDisconnected(neutron::Context *ctx,
 				 neutron::Connection *conn)
 {
-	mHandler->onDisconnected(this, nullptr);
+	if (mHandler != nullptr)
+		mHandler->onDisconnected(this, nullptr);
 }
 
-inline void Node::onFdCreated(neutron::Context *ctx, int fd)
-{
-	LOGI("Fd Created %d", fd);
-}
+inline void Node::onFdCreated(neutron::Context *ctx, int fd) {}
 
 inline void Node::recvData(neutron::Context *ctx,
 			   neutron::Connection *conn,
 			   const std::vector<uint8_t> &buf)
 {
-	const Message *msg = Message::unpack(buf.data());
-	mHandler->onMsgRecv(this, msg, nullptr);
+	if (mHandler != nullptr) {
+		const Message *msg = Message::unpack(buf.data());
+		mHandler->onMsgRecv(this, msg, nullptr);
+	}
 }
 
 } // namespace nexus
