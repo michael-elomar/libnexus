@@ -11,7 +11,9 @@ LOCAL_LIBRARIES += \
 	libneutron
 
 LOCAL_EXPORT_C_INCLUDES := \
-	$(LOCAL_PATH)/include
+	$(LOCAL_PATH)/include \
+	$(LOCAL_PATH)/src \
+	$(TARGET_OUT_BUILD)/$(LOCAL_MODULE)/obj/generated/protobuf
 
 LOCAL_CMAKE_CONFIGURE_ARGS := \
 	-DCMAKE_MODULE_PATH=$(TARGET_OUT_STAGING)/usr/lib/cmake/neutron \

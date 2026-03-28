@@ -31,6 +31,7 @@ add_library(${PROJECT_NAME} SHARED ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${INCLUDE}>)
 target_link_libraries(${PROJECT_NAME}
 	protobuf-c
+	protobuf::libprotobuf
 	${PROJECT_NAME}-pb-c
 	${PROJECT_NAME}-pb-cc
 )
