@@ -9,7 +9,7 @@ set(PROTOBUF_OUTPUT "${CMAKE_BINARY_DIR}/generated/protobuf")
 set_property(GLOBAL APPEND PROPERTY PROTO_CC_HEADERS ${PROTOBUF_OUTPUT})
 
 set(PROTO_SRC
-	message.proto
+	foo.proto
 )
 
 if(NOT EXISTS "${PROTOBUF_OUTPUT}/${PROJECT_NAME}-c")

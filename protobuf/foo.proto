@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package nexus;
+
+message Foo
+{
+	double x = 1;
+	int32 y = 2;
+	string s = 3;
+}
