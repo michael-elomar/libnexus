@@ -68,3 +68,14 @@ target_link_libraries(${PROJECT_NAME}-pb-c protobuf::libprotobuf)
 add_library(${PROJECT_NAME}-pb-cc SHARED ${CC_SRC_FILES})
 target_include_directories(${PROJECT_NAME}-pb-cc PRIVATE $<BUILD_INTERFACE:${PROTOBUF_CXX_OUTPUT}>)
 target_link_libraries(${PROJECT_NAME}-pb-cc protobuf::libprotobuf)
+
+
+set(PB_INSTALL_TARGETS
+	${PROJECT_NAME}-pb-c
+	${PROJECT_NAME}-pb-cc
+)
+
+install(TARGETS ${PB_INSTALL_TARGETS}
+    EXPORT ${PROJECT_NAME}Targets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

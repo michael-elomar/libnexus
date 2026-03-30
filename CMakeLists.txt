@@ -54,19 +54,7 @@ endif()
 
 #======== Install Support ========#
 
-set(INSTALL_TARGETS
-	${PROJECT_NAME}
-	${PROJECT_NAME}-cli
-	${PROJECT_NAME}-cpp-cli
-	${PROJECT_NAME}-pb-c
-	${PROJECT_NAME}-pb-cc
-
-	# add test targets here
-	test_message
-	test_node
-)
-
-install(TARGETS ${INSTALL_TARGETS}
+install(TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}Targets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -75,3 +63,27 @@ install(TARGETS ${INSTALL_TARGETS}
 
 # Install the headers
 install(DIRECTORY include/ DESTINATION include)
+
+#======== Package Support ========#
+
+# Create a package configuration file
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+# Install the package configuration files
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+# Export targets for use by other projects
+install(EXPORT ${PROJECT_NAME}Targets
+    FILE ${PROJECT_NAME}Targets.cmake
+    NAMESPACE ${PROJECT_NAME}::
+    DESTINATION lib/cmake/${PROJECT_NAME}
+)
